@@ -1,0 +1,45 @@
+:root {
+  color-scheme: light dark;
+  font: 13px/1.45 system-ui, sans-serif;
+  color: #172033;
+  background: #f8fafc;
+  --muted: #526077;
+  --border: #cbd5e1;
+  --surface: #fff;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; padding: 18px; }
+header, .input-row, #hosts li { display: flex; align-items: center; gap: 10px; }
+header { justify-content: space-between; }
+h1 { margin: 0; font-size: 20px; letter-spacing: -0.4px; }
+h2 { margin: 0 0 8px; font-size: 14px; }
+p { margin: 10px 0; }
+.hint, footer { color: var(--muted); font-size: 12px; }
+.status { border-radius: 5px; padding: 3px 7px; background: #475569; color: white; font-weight: 700; }
+.status[data-code="ON"] { background: #166534; }
+.status[data-code="OFF"], .status[data-code="ERR"] { background: #b91c1c; }
+ul, ol { list-style: none; padding: 0; margin: 0; }
+#hosts { max-height: 40vh; overflow-y: auto; border-block: 1px solid var(--border); }
+#hosts li { min-height: 36px; padding: 5px 0; justify-content: space-between; }
+#hosts li span { overflow-wrap: anywhere; min-width: 0; }
+button, input { font: inherit; border: 1px solid var(--border); border-radius: 5px; padding: 7px 10px; }
+input { width: 100%; min-width: 0; background: var(--surface); color: inherit; }
+button { background: var(--surface); color: inherit; cursor: pointer; flex-shrink: 0; }
+button:disabled { opacity: 0.5; cursor: default; }
+button:focus-visible, input:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+button.remove { padding: 3px 7px; font-size: 12px; }
+form { margin-top: 14px; }
+label { display: block; margin-bottom: 5px; font-weight: 600; }
+.primary { margin-top: 10px; width: 100%; color: #fff; background: #1d4ed8; border-color: #1d4ed8; }
+#message { overflow-wrap: anywhere; }
+#message[data-error="true"] { color: #b91c1c; }
+section { margin-top: 18px; }
+#history { max-height: 25vh; overflow-y: auto; }
+#history li { margin-bottom: 9px; overflow-wrap: anywhere; }
+#history time { display: block; font-size: 11px; color: var(--muted); }
+footer { border-top: 1px solid var(--border); padding-top: 10px; margin-top: 14px; }
+@media (prefers-color-scheme: dark) {
+  :root { color: #e2e8f0; background: #111827; --muted: #a8b5ca; --border: #475569; --surface: #1e293b; }
+  #message[data-error="true"] { color: #fca5a5; }
+}

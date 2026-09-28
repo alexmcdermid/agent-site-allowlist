@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agent Site Allowlist</title>
+    <link rel="stylesheet" href="popup.css">
+    <script src="rules.js" defer></script>
+    <script src="popup.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Site allowlist</h1>
+      <span id="status" class="status" aria-label="Proxy status">...</span>
+    </header>
+    <p id="mode">Loading your saved list…</p>
+    <p class="hint">Each entry allows the whole domain and its subdomains, across all paths and ports.</p>
+    <ul id="hosts" aria-label="Allowed domains"></ul>
+    <p id="empty-list" class="hint" hidden>No domains are allowed by this list.</p>
+    <form id="add-form" hidden>
+      <label for="domain">Add a website or range</label>
+      <div class="input-row">
+        <input id="domain" type="text" placeholder="https://docs.example.com/"
+          aria-describedby="domain-hint" autocomplete="off" autocapitalize="none" spellcheck="false" required>
+        <button id="add" type="submit">Add</button>
+      </div>
+      <p id="domain-hint" class="hint">Paste an http:// or https:// URL, a domain, or a range such as app-{1..49}.example.com. Up to 100 domains per range; no leading zeros or * wildcards.</p>
+    </form>
+    <button id="save" class="primary" type="button" hidden disabled>Save changes</button>
+    <p id="message" role="status" aria-live="polite"></p>
+    <section aria-labelledby="history-heading">
+      <h2 id="history-heading">Changes · last 7 days</h2>
+      <ol id="history" aria-label="Saved list changes"></ol>
+      <p id="empty-history" class="hint" hidden>No changes saved in the last 7 days.</p>
+      <p class="hint">History records saved changes, not who made them. Older entries are removed when you open or save.</p>
+    </section>
+    <footer>Local and link-local connections can bypass this allowlist.</footer>
+  </body>
+</html>

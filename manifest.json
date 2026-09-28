@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "minimum_chrome_version": "116",
+  "name": "Agent Site Allowlist",
+  "version": "1.0.0",
+  "description": "A lightweight website allowlist for a dedicated Chrome profile, using proxy routing with documented browser exceptions.",
+  "permissions": ["proxy", "storage", "sidePanel"],
+  "action": {
+    "default_title": "Agent Site Allowlist: checking proxy status"
+  },
+  "side_panel": { "default_path": "popup.html" },
+  "externally_connectable": { "ids": [] },
+  "background": { "service_worker": "background.js" }
+}
