@@ -46,6 +46,9 @@ function expandDomainInput(value) {
     `${range[1]}${start + index}${range[4]}`));
 }
 
+// Blocked hosts go to an HTTPS proxy on an unused port. A local process that listens there
+// cannot relay them without a certificate Chrome trusts for 127.0.0.1. Keep this a single
+// valid entry: Chrome treats an unparseable PAC result as DIRECT.
 function buildPac(hosts) {
   return `function FindProxyForURL(url, host) {
   var allowed = ${JSON.stringify(hosts)};
@@ -53,7 +56,7 @@ function buildPac(hosts) {
   for (var i = 0; i < allowed.length; i++) {
     if (host === allowed[i] || dnsDomainIs(host, "." + allowed[i])) return "DIRECT";
   }
-  return "PROXY 127.0.0.1:9";
+  return "HTTPS 127.0.0.1:9";
 }`;
 }
 

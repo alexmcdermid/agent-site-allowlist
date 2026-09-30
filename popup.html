@@ -28,6 +28,17 @@
     </form>
     <button id="save" class="primary" type="button" hidden disabled>Save changes</button>
     <p id="message" role="status" aria-live="polite"></p>
+    <div class="maintenance">
+      <button id="reload" type="button" aria-describedby="reload-hint" disabled>Reload extension</button>
+      <p id="reload-hint" class="hint">Saved sites stay. Save edits in other panels first. Reopen this panel if it closes.</p>
+      <div id="reload-confirmation" role="group" aria-labelledby="reload-warning" hidden>
+        <p id="reload-warning"><strong>Reload temporarily stops site blocking.</strong></p>
+        <p>Open pages may connect to unlisted sites while the extension restarts. Check that the badge returns to ON before resuming agent browsing.</p>
+        <p id="reload-unsaved" hidden>Unsaved edits and unfinished input in this panel will be discarded.</p>
+        <button id="reload-confirm" type="button" disabled>Reload now</button>
+        <button id="reload-cancel" type="button" disabled>Cancel</button>
+      </div>
+    </div>
     <section aria-labelledby="history-heading">
       <h2 id="history-heading">Changes · last 7 days</h2>
       <ol id="history" aria-label="Saved list changes"></ol>

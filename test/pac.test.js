@@ -5,7 +5,7 @@ const path = require("node:path");
 const vm = require("node:vm");
 
 const ROOT = path.join(__dirname, "..");
-const BLOCKED = "PROXY 127.0.0.1:9";
+const BLOCKED = "HTTPS 127.0.0.1:9";
 const WEEK = 7 * 24 * 60 * 60 * 1000;
 const EDITOR_URL = "chrome-extension://test-extension/popup.html";
 
@@ -135,6 +135,12 @@ test("PAC blocks unlisted and lookalike hosts", async () => {
   for (const host of ["example.com", "cloudflare.com", "login.microsoftonline.com", "accounts.google.com", "10.0.0.5", "evilclaude.ai", "claude.ai.evil.com", "notchatgpt.com", "statsig.com", "api.statsig.com", "statsigapi.net", "events.statsigapi.net", "featuregates.org"]) {
     assert.equal(route(state, host), BLOCKED, host);
   }
+});
+
+test("blocked hosts use one HTTPS proxy entry with no direct fallback", async () => {
+  const state = await installed();
+  // A plain PROXY entry lets any local process listening on port 9 relay blocked requests.
+  assert.match(route(state, "example.com"), /^HTTPS 127\.0\.0\.1:9$/);
 });
 
 test("only reports ON after the expected configuration is active", async () => {

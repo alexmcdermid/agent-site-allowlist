@@ -55,7 +55,7 @@ test("expanded ranges keep other numbers, zero-padded names and lookalikes block
     assert.equal(findProxy(`https://${host}/`, host), "DIRECT", host);
   }
   for (const host of ["app-0.example.com", "app-50.example.com", "app-149.example.com", "app-01.example.com", "app-prod.example.com", "other-15.example.com", "app-15.example.com.evil.com"]) {
-    assert.equal(findProxy(`https://${host}/`, host), "PROXY 127.0.0.1:9", host);
+    assert.equal(findProxy(`https://${host}/`, host), "HTTPS 127.0.0.1:9", host);
   }
 });
 

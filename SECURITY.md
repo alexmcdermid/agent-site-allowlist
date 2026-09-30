@@ -1,33 +1,31 @@
 # Security Policy
 
-## Reporting a vulnerability
+## Reporting
 
-When this repository is hosted on GitHub with private vulnerability reporting enabled, use **Security** → **Report a vulnerability**. If that option is unavailable, ask the maintainer for a private reporting channel without publishing exploit details. Please don't open a public issue describing a bypass.
+Report privately with GitHub's **Security** → **Report a vulnerability**, or ask the maintainer for a private channel. Don't open a public issue about a bypass.
 
-Include the Chrome version, OS, your `ALLOWED` list (redacted if needed), and steps to reproduce.
-
-This is a volunteer project; reports are handled on a best-effort basis.
+Include your Chrome version, OS, `ALLOWED` list (redacted if needed) and steps to reproduce. Reports are handled on a best-effort basis.
 
 ## In scope
 
-- An unlisted host reached through a connection governed by the active PAC script
-- Unexpected direct fallback for requests governed by the mandatory PAC script
-- A badge that incorrectly reports the expected proxy configuration as active
-- An editor message accepted while editing is locked (for saves), from another extension or website, or from a regular tab
-- The extension affecting profiles other than the one it's installed in
+- Reaching an unlisted host through a connection the PAC script governs
+- Direct fallback from the mandatory PAC script
+- The badge showing `ON` when the expected configuration isn't active
+- The editor accepting a save while locked, or a message from another extension, a website or a tab
+- A program listening on a local port relaying blocked hosts
+- The extension affecting other profiles
 
 ## Out of scope
 
-Known limits documented in the [README](README.md#limits):
+The known [limits](README.md#limits), including:
 
-- Disabling or removing the extension
-- Loopback and link-local traffic that Chrome exempts from PAC routing
-- WebRTC UDP from a loaded page
-- Existing sessions, cookies, cached content, and already-open pages
-- Loss of enforcement while another extension or policy controls the proxy (failure to warn is in scope)
-- Independently configured Incognito settings
-- Alteration of local history by someone who can modify extension files or storage
-- Proxy or storage changes through privileged debugger access to extension pages or the service worker; the editor lock cannot restrict those Chrome APIs
-- Data sent to, or actions taken on, an allowed host, including an allowed sign-in host
-- Traffic from tools outside the Chrome profile, such as a coding agent's shell or web fetch
-- Attacks requiring local OS access
+- Disabling, removing or reloading the extension (a missing warning before a side-panel reload is in scope)
+- Loopback and link-local traffic that Chrome sends directly
+- WebRTC UDP
+- Existing sessions, cached content and open pages
+- Another extension or policy controlling the proxy (a missing warning is in scope)
+- Incognito windows when the extension isn't allowed there
+- Anyone who can change the extension's files or storage, or debug its pages
+- Data sent to, or actions taken on, an allowed host
+- Traffic from outside the Chrome profile
+- Attacks needing local OS access, such as changing certificate trust or Chrome's startup flags
