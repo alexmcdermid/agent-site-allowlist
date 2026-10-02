@@ -1,10 +1,14 @@
 const elements = Object.fromEntries([
-  "status", "mode", "hosts", "empty-list", "add-form", "domain", "add", "save", "message", "history", "empty-history",
+  "status", "mode", "hosts", "empty-list", "add-form", "domain", "add", "save", "reload",
+  "reload-confirmation", "reload-unsaved", "reload-confirm", "reload-cancel", "message", "history", "empty-history",
 ].map((id) => [id, document.getElementById(id)]));
 let baseHosts = [];
 let draftHosts = [];
 let editingEnabled = false;
 let busy = true;
+let canReload = false;
+let confirmingReload = false;
+const RELOAD_TIMEOUT_MS = 5000;
 
 function message(text, error = false) {
   elements.message.textContent = text;
@@ -21,11 +25,19 @@ function hasUnsavedChanges() {
   return JSON.stringify(draftHosts) !== JSON.stringify(baseHosts);
 }
 
+// Unsaved list edits, or text still in the domain field.
+function hasPendingInput() {
+  return hasUnsavedChanges() || elements.domain.value.trim() !== "";
+}
+
 function updateControls() {
-  const disabled = busy || !editingEnabled;
+  const disabled = busy || confirmingReload || !editingEnabled;
   elements.domain.disabled = disabled;
   elements.add.disabled = disabled;
   elements.save.disabled = disabled || !hasUnsavedChanges();
+  elements.reload.disabled = busy || confirmingReload || !canReload;
+  elements["reload-confirmation"].hidden = !confirmingReload;
+  elements["reload-confirm"].disabled = elements["reload-cancel"].disabled = busy || !confirmingReload;
   for (const button of elements.hosts.querySelectorAll("button")) button.disabled = disabled;
 }
 
@@ -57,6 +69,8 @@ function renderHosts() {
 }
 
 function renderState(state) {
+  // Only a successfully authorized editor can expose the reload action.
+  canReload = true;
   baseHosts = [...state.hosts];
   draftHosts = [...state.hosts];
   editingEnabled = state.editingEnabled;
@@ -91,7 +105,7 @@ function renderStatus(status) {
 // Keep long-lived panels current without discarding unsaved domain edits or pasted text.
 function refreshView() {
   request("getState").then((state) => {
-    if (!busy && !hasUnsavedChanges() && !elements.domain.value.trim()) renderState(state);
+    if (!busy && !hasPendingInput()) renderState(state);
     else renderStatus(state.status);
   }).catch((error) => {
     renderStatus({ code: "ERR", message: error.message });
@@ -136,6 +150,46 @@ elements.save.addEventListener("click", async () => {
     busy = false;
     updateControls();
   }
+});
+
+elements.reload.addEventListener("click", () => {
+  if (busy || !canReload) return;
+  confirmingReload = true;
+  elements["reload-unsaved"].hidden = !hasPendingInput();
+  updateControls();
+  elements["reload-cancel"].focus();
+});
+
+elements["reload-cancel"].addEventListener("click", () => {
+  if (busy || !confirmingReload) return;
+  confirmingReload = false;
+  updateControls();
+  elements.reload.focus();
+});
+
+function endReloadAttempt(text) {
+  busy = false;
+  confirmingReload = false;
+  updateControls();
+  elements.reload.focus();
+  message(text, true);
+}
+
+elements["reload-confirm"].addEventListener("click", () => {
+  if (busy || !canReload || !confirmingReload) return;
+  busy = true;
+  updateControls();
+  message("Reloading extension… Reopen the side panel if it closes.");
+  try {
+    chrome.runtime.reload();
+  } catch (error) {
+    endReloadAttempt(`Could not reload: ${error.message}. Try reloading from Manage Extensions.`);
+    return;
+  }
+  // A successful reload closes this panel. If it is still open, restore the controls.
+  setTimeout(() => {
+    endReloadAttempt("The extension did not reload. Try reloading from Manage Extensions.");
+  }, RELOAD_TIMEOUT_MS);
 });
 
 request("getState").then((state) => {
